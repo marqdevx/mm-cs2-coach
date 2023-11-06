@@ -1,43 +1,21 @@
-![Build pass](https://github.com/marqdevx/mm-cs2-scrim/actions/workflows/compile-metamod-addon.yaml/badge.svg)
+![Build pass](https://github.com/marqdevx/mm-cs2-coach/actions/workflows/compile-metamod-addon.yaml/badge.svg)
 
-## This repository is just a tweak of https://github.com/Source2ZE/CS2Fixes/
-Removing "unnecessary" features from the original addon, to have the minimum to just run the commands.
+## IMPORTANT
+This repository is based on https://github.com/Source2ZE/CS2Fixes/
+Removing "unnecessary" features from the original addon.
+Thanks for the work!
 
-## DISCLAIMER: *not* responsible for any issues or breakages caused by the plugin. 
+```
+DISCLAIMER: *not* responsible for any issues or breakages caused by the plugin. 
+```
 
-# Competitive Practice & Scrim for CS2
-This plugin adds the minimum requirements for competitive teams that need a more handy way of managing a few commands from the server side, like config management or replay recording.
+# Addon information
+This metamod addon ONLY adds the workaround to set a player as a coach on competitive matches.
 
 ## Available Commands
 
-* Config and server management (Admin only)  
-  `.pracc`: launch the practice config  
-  `.scrim`: start the competitive match  
-  `.map <map>`: change the map (example: `.map ancient`)  
-
-* Scrim commands  
-  `.pause`: pauses the match  
-  `.unpause`: request the unpause  
-  * Admin only  
-    `.record`: start the demo recording  
-    `.stoprecord`: finish the recording and save it under `gotv/<date>.dem`  
-    `.restore <round>`: load the desired round's backup  
-    `.forceunpause`: force the unpause  
-
-## Roadmap
-- Scrim
-  - [X] Pauses
-  - [X] Medic (round backup)
-  - [ ] Coach
-  - [X] gotv .record
-    - [X] include date and time
-    - [ ] include map name
-- Practice
-  - [X] Map
-  - [ ] Spawns
-  - [ ] Remove smokes
-  - [ ] Move to spec
-  - [ ] Noclip
+  `.coach`: launch the practice config  
+  `.uncoach`: start the competitive match  
 
 ## Compilation
 
@@ -53,3 +31,6 @@ Set up video: https://www.youtube.com/watch?v=thk78MDsQnc
 ## Authors from the [original repository](https://github.com/Source2ZE/CS2Fixes/)
 - [@xen-000](https://github.com/xen-000)
 - [@poggicek](https://github.com/poggicek)
+
+## Credits
+- [CKRAS Host Team](https://www.ckras.com/en) They liked the cs2scrim addon, they contacted me and helped trying out the best way to make this work, find bugs and give feedback.
