@@ -61,7 +61,7 @@ void Message(const char *msg, ...)
 	char buf[1024] = {};
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
 
-	ConColorMsg(Color(255, 0, 255, 255), "[CS2Scrim] %s", buf);
+	ConColorMsg(Color(255, 0, 255, 255), "[CS2Coach] %s", buf);
 
 	va_end(args);
 }
@@ -75,7 +75,7 @@ void Panic(const char *msg, ...)
 	V_vsnprintf(buf, sizeof(buf) - 1, msg, args);
 
 	if (CommandLine()->HasParm("-dedicated"))
-		Warning("[CS2Scrim] %s", buf);
+		Warning("[CS2Coach] %s", buf);
 #ifdef _WIN32
 	else
 		MessageBoxA(nullptr, buf, "Warning", 0);
@@ -520,7 +520,7 @@ const char *CS2Scrim::GetLicense()
 
 const char *CS2Scrim::GetVersion()
 {
-	return "1.0.0.0";
+	return "1.0.0.4-b";
 }
 
 const char *CS2Scrim::GetDate()
@@ -530,7 +530,7 @@ const char *CS2Scrim::GetDate()
 
 const char *CS2Scrim::GetLogTag()
 {
-	return "cs2scrim";
+	return "cs2coach";
 }
 
 const char *CS2Scrim::GetAuthor()
@@ -545,7 +545,7 @@ const char *CS2Scrim::GetDescription()
 
 const char *CS2Scrim::GetName()
 {
-	return "cs2scrim";
+	return "cs2coach";
 }
 
 const char *CS2Scrim::GetURL()

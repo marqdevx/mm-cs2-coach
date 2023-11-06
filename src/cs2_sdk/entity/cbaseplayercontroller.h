@@ -43,7 +43,7 @@ public:
 	SCHEMA_FIELD(CHandle<CBasePlayerPawn>, m_hPawn)
 	SCHEMA_FIELD_POINTER(char, m_iszPlayerName)
 	SCHEMA_FIELD(PlayerConnectedState, m_iConnected)
-
+//SCHEMA_FIELD_POINTER(char, m_szClan);
 	CBasePlayerPawn *GetPawn() { return m_hPawn.Get(); }
 	const char *GetPlayerName() { return m_iszPlayerName(); }
 	int GetPlayerSlot() { return entindex() - 1; }

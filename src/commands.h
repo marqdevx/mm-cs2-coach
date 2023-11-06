@@ -22,7 +22,7 @@
 #include "convar.h"
 
 #define COMMAND_PREFIX "c_"
-#define CHAT_PREFIX	" \3[CS2Scrim]\1 "
+#define CHAT_PREFIX	" \3[CS2Coach]\1 "
 
 typedef void (*FnChatCommandCallback_t)(const CCommand &args, CCSPlayerController *player);
 

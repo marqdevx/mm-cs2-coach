@@ -21,7 +21,7 @@ apt-get install gcc -y
 cd "/dockerVolume/ambuild"
 python3 setup.py install
 
-cd "/dockerVolume/mm-cs2-scrim"
+cd "/dockerVolume/mm-cs2-coach"
 mkdir build
 cd build
 
