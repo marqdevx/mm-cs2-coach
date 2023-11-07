@@ -39,9 +39,9 @@
 #include "entitysystem.h"
 #include "engine/igameeventsystem.h"
 #include "ctimer.h"
-
+#include "playermanager.h"
 #include <entity.h>
-
+#include "adminsystem.h"
 #include "eventlistener.h"
 #include "gameconfig.h"
 
@@ -132,7 +132,7 @@ IGameEventSystem* g_gameEventSystem;
 IGameEventManager2* g_gameEventManager = nullptr;
 INetworkGameServer* g_networkGameServer;
 CGlobalVars* gpGlobals = nullptr;
-//CPlayerManager* g_playerManager = nullptr;
+CPlayerManager* g_playerManager = nullptr;
 IVEngineServer2* g_pEngineServer2;
 CGameConfig *g_GameConfig = nullptr;
 
@@ -210,30 +210,30 @@ bool CS2Scrim::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	//if (!requiredInitLoaded)
 	//	return false;
 
-	//g_playerManager = new CPlayerManager();
-	//g_pAdminSystem = new CAdminSystem();
+	g_playerManager = new CPlayerManager();
+	g_pAdminSystem = new CAdminSystem();
 
 	// Steam authentication
 	new CTimer(1.0f, true, true, []()
 	{
-		//g_playerManager->TryAuthenticate();
+		g_playerManager->TryAuthenticate();
 	});
 
 	// Check hide distance
 	new CTimer(0.5f, true, true, []()
 	{
-		//g_playerManager->CheckHideDistances();
+		g_playerManager->CheckHideDistances();
 	});
 
 	// Check for the expiration of infractions like mutes or gags
 	new CTimer(30.0f, true, true, []()
 	{
-		//g_playerManager->CheckInfractions();
+		g_playerManager->CheckInfractions();
 	});
 
-	//g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
+	g_gameEventManager = (IGameEventManager2*)(CALL_VIRTUAL(uintptr_t, 91, g_pSource2Server) - 8);
 
-	//Message("g_gameEventManager - %p\n", g_gameEventManager);
+	Message("g_gameEventManager - %p\n", g_gameEventManager);
 
 	srand(time(0));
 
@@ -263,12 +263,12 @@ bool CS2Scrim::Unload(char *error, size_t maxlen)
 	RemoveTimers();
 	UnregisterEventListeners();
 
-	/*if (g_playerManager != NULL)
-		delete g_playerManager;*/
-/*
+	if (g_playerManager != NULL)
+		delete g_playerManager;
+
 	if (g_pAdminSystem != NULL)
 		delete g_pAdminSystem;
-*/
+
 	if (g_GameConfig != NULL)
 		delete g_GameConfig;
 
@@ -303,6 +303,29 @@ void CS2Scrim::Hook_PostEvent(CSplitScreenSlot nSlot, bool bLocalOnly, int nClie
 
 	NetMessageInfo_t* info = pEvent->GetNetMessageInfo();
 
+	//CMsgTEFireBullets
+	if (info->m_MessageId == GE_FireBulletsId || info->m_MessageId == TE_WorldDecalId)
+	{
+		// Can later do a bit mask for players using stopsound but this will do for now
+		for (uint64 i = 0; i < MAXPLAYERS; i++)
+		{
+			ZEPlayer *pPlayer = g_playerManager->GetPlayer(i);
+
+			// A client might be already excluded from the event possibly due to being too far away, so ignore them
+			if (!(*(uint64 *)clients & ((uint64)1 << i)))
+				continue;
+
+			if (!pPlayer)
+				continue;
+
+			if ((info->m_MessageId == GE_FireBulletsId && pPlayer->IsUsingStopSound()) || 
+				(info->m_MessageId == TE_WorldDecalId && pPlayer->IsUsingStopDecals()))
+			{
+				*(uint64*)clients &= ~((uint64)1 << i);
+				nClientCount--;
+			}
+		}
+	}
 }
 
 void CS2Scrim::AllPluginsLoaded()
@@ -337,16 +360,16 @@ void CS2Scrim::Hook_OnClientConnected( CPlayerSlot slot, const char *pszName, ui
 {
 	Message( "Hook_OnClientConnected(%d, \"%s\", %lli, \"%s\", \"%s\", %d)\n", slot, pszName, xuid, pszNetworkID, pszAddress, bFakePlayer );
 
-	/*if(bFakePlayer)
-		g_playerManager->OnBotConnected(slot);*/
+	if(bFakePlayer)
+		g_playerManager->OnBotConnected(slot);
 }
 
 bool CS2Scrim::Hook_ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason )
 {
 	Message( "Hook_ClientConnect(%d, \"%s\", %lli, \"%s\", %d, \"%s\")\n", slot, pszName, xuid, pszNetworkID, unk1, pRejectReason->ToGrowable()->Get() );
 		
-	/*if (!g_playerManager->OnClientConnected(slot))
-		RETURN_META_VALUE(MRES_SUPERCEDE, false);*/
+	if (!g_playerManager->OnClientConnected(slot))
+		RETURN_META_VALUE(MRES_SUPERCEDE, false);
 
 	RETURN_META_VALUE(MRES_IGNORED, true);
 }
@@ -360,7 +383,7 @@ void CS2Scrim::Hook_ClientDisconnect( CPlayerSlot slot, int reason, const char *
 {
 	Message( "Hook_ClientDisconnect(%d, %d, \"%s\", %lli, \"%s\")\n", slot, reason, pszName, xuid, pszNetworkID );
 
-	//g_playerManager->OnClientDisconnect(slot);
+	g_playerManager->OnClientDisconnect(slot);
 }
 
 void CS2Scrim::Hook_GameFrame( bool simulating, bool bFirstTick, bool bLastTick )
@@ -420,6 +443,47 @@ void CS2Scrim::Hook_CheckTransmit(CCheckTransmitInfo **ppInfoList, int infoCount
 	if (!g_pEntitySystem)
 		return;
 
+	for (int i = 0; i < infoCount; i++)
+	{
+		auto &pInfo = ppInfoList[i];
+
+		// offset 560 happens to have a player index here,
+		// though this is probably part of the client class that contains the CCheckTransmitInfo
+		int iPlayerSlot = (int)*((uint8 *)pInfo + 560);
+
+		auto pPlayer = g_playerManager->GetPlayer(iPlayerSlot);
+
+		if (!pPlayer)
+			continue;
+
+		auto pSelfController = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(pPlayer->GetPlayerSlot().Get() + 1));
+
+		if (!pSelfController)
+			continue;
+
+		auto pSelfPawn = pSelfController->GetPawn();
+
+		if (!pSelfPawn || !pSelfPawn->IsAlive())
+			continue;
+
+		for (int i = 1; i <= MAXPLAYERS; i++)
+		{
+			if (!pPlayer->ShouldBlockTransmit(i - 1))
+				continue;
+
+			auto pController = (CBasePlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)i);
+
+			if (!pController)
+				continue;
+
+			auto pPawn = pController->GetPawn();
+
+			if (!pPawn)
+				continue;
+
+			pInfo->m_pTransmitEntity->Clear(pPawn->entindex());
+		}
+	}
 }
 
 // Potentially might not work

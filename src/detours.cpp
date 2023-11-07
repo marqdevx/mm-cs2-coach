@@ -31,7 +31,7 @@
 #include "entity/cbasemodelentity.h"
 #include "entity/ccsweaponbase.h"
 #include "entity/ctriggerpush.h"
-//#include "playermanager.h"
+#include "playermanager.h"
 #include "igameevents.h"
 #include "gameconfig.h"
 
@@ -137,10 +137,10 @@ void FASTCALL Detour_CSoundEmitterSystem_EmitSound(ISoundEmitterSystemBase *pSou
 
 bool FASTCALL Detour_IsHearingClient(void* serverClient, int index)
 {
-	/*ZEPlayer* player = g_playerManager->GetPlayer(index);
+	ZEPlayer* player = g_playerManager->GetPlayer(index);
 	if (player && player->IsMuted())
 		return false;
-	*/
+
 	return IsHearingClient(serverClient, index);
 }
 
@@ -181,7 +181,7 @@ void FASTCALL Detour_UTIL_SayText2Filter(
 
 void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, bool teamonly, int unk1, const char *unk2)
 {
-	/*bool bGagged = pController && g_playerManager->GetPlayer(pController->GetPlayerSlot())->IsGagged();
+	bool bGagged = pController && g_playerManager->GetPlayer(pController->GetPlayerSlot())->IsGagged();
 
 	if (!bGagged && *args[1] != '/')
 	{
@@ -200,7 +200,7 @@ void FASTCALL Detour_Host_Say(CCSPlayerController *pController, CCommand &args, 
 				g_gameEventManager->FireEvent(pEvent, true);
 			}
 		}
-	}*/
+	}
 
 	if (*args[1] == '!' || *args[1] == '/' || *args[1] == '.')
 		ParseChatCommand(args[1], pController);

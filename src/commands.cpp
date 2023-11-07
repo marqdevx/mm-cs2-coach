@@ -28,6 +28,7 @@
 #include "entity/ccsplayercontroller.h"
 #include "entity/ccsplayerpawn.h"
 #include "entity/cbasemodelentity.h"
+#include "playermanager.h"
 #include "ctimer.h"
 
 #include "tier0/memdbgon.h"
@@ -36,8 +37,6 @@ extern CEntitySystem *g_pEntitySystem;
 extern IVEngineServer2* g_pEngineServer2;
 extern int g_targetPawn;
 extern int g_targetController;
-
-CUtlMap<uint32, FnChatCommandCallback_t> g_CommandList(0, 0, DefLessFunc(uint32));
 
 void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 {
