@@ -34,4 +34,4 @@ Set up video: https://www.youtube.com/watch?v=thk78MDsQnc
 - [@poggicek](https://github.com/poggicek)
 
 ## Credits
-- [CKRAS Host Team](https://www.ckras.com/en) They liked the cs2scrim addon, they contacted me and helped trying out the best way to make this work, find bugs and give feedback.
+- [CKRAS Hosting Team](https://www.ckras.com/en) They liked the cs2scrim addon, they contacted me and helped trying out the best way to make this work, find bugs and give feedback.
