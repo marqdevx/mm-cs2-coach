@@ -550,5 +550,5 @@ const char *CS2Scrim::GetName()
 
 const char *CS2Scrim::GetURL()
 {
-	return "https://github.com/marqdevx/mm-cs2-scrim";
+	return "https://github.com/marqdevx/mm-cs2-coach";
 }
