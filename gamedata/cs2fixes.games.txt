@@ -300,7 +300,7 @@
             "CCSPlayerController_ChangeTeam"
 			{
 				"windows"	"90"
-				"linux"		"90"
+				"linux"		"89"
 			}
 			// Look for the kill command, go through its callback and you should a find call like this, with v9 being a pawn pointer:
 			// return (*(*v9 + 2832LL))(v9, v27, 0LL);
