@@ -20,7 +20,6 @@
 #include <../cs2fixes.h>
 #include "utlstring.h"
 #include "playermanager.h"
-#include "adminsystem.h"
 #include "entity/ccsplayercontroller.h"
 #include "ctime"
 
@@ -30,30 +29,13 @@ extern CEntitySystem *g_pEntitySystem;
 
 void ZEPlayer::OnAuthenticated()
 {
-	CheckAdmin();
-	CheckInfractions();
+	//CheckAdmin();
+	//CheckInfractions();
 }
 
 void ZEPlayer::CheckInfractions()
 {
-	g_pAdminSystem->ApplyInfractions(this);
-}
-
-void ZEPlayer::CheckAdmin()
-{
-	if (IsFakeClient())
-		return;
-
-	auto admin = g_pAdminSystem->FindAdmin(GetSteamId64());
-	if (!admin)
-	{
-		SetAdminFlags(0);
-		return;
-	}
-
-	SetAdminFlags(admin->GetFlags());
-
-	Message("%lli authenticated as an admin\n", GetSteamId64());
+	
 }
 
 bool ZEPlayer::IsAdminFlagSet(uint64 iFlag)
@@ -74,13 +56,6 @@ bool CPlayerManager::OnClientConnected(CPlayerSlot slot)
 	Message("%d connected\n", slot.Get());
 
 	ZEPlayer *pPlayer = new ZEPlayer(slot);
-
-	if (!g_pAdminSystem->ApplyInfractions(pPlayer))
-	{
-		// Player is banned
-		delete pPlayer;
-		return false;
-	}
 
 	pPlayer->SetConnected();
 	m_vecPlayers[slot.Get()] = pPlayer;
@@ -128,7 +103,6 @@ void CPlayerManager::CheckInfractions()
 		m_vecPlayers[i]->CheckInfractions();
 	}
 
-	g_pAdminSystem->SaveInfractions();
 }
 
 void CPlayerManager::CheckHideDistances()

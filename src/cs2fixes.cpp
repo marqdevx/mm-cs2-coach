@@ -41,7 +41,7 @@
 #include "ctimer.h"
 #include "playermanager.h"
 #include <entity.h>
-#include "adminsystem.h"
+
 #include "eventlistener.h"
 #include "gameconfig.h"
 
@@ -211,7 +211,6 @@ bool CS2Scrim::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 	//	return false;
 
 	g_playerManager = new CPlayerManager();
-	g_pAdminSystem = new CAdminSystem();
 
 	// Steam authentication
 	new CTimer(1.0f, true, true, []()
@@ -265,9 +264,6 @@ bool CS2Scrim::Unload(char *error, size_t maxlen)
 
 	if (g_playerManager != NULL)
 		delete g_playerManager;
-
-	if (g_pAdminSystem != NULL)
-		delete g_pAdminSystem;
 
 	if (g_GameConfig != NULL)
 		delete g_GameConfig;
