@@ -53,6 +53,8 @@ float g_flUniversalTime;
 float g_flLastTickedTime;
 bool g_bHasTicked;
 
+extern CUtlVector <CCSPlayerController*> coaches;
+
 void Message(const char *msg, ...)
 {
 	va_list args;
@@ -175,7 +177,7 @@ bool CS2Scrim::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
 
-	const char *gamedataPath = "addons/cs2coach/gamedata/cs2fixes.games.txt";
+	const char *gamedataPath = "addons/CS2Coach/gamedata/cs2fixes.games.txt";
 	Message("Loading %s for game: %s\n", gamedataPath, gamedirname.c_str());
 
 	g_GameConfig = new CGameConfig(gamedirname, gamedataPath);
@@ -212,6 +214,8 @@ bool CS2Scrim::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	g_playerManager = new CPlayerManager();
 
+	coaches.Purge();
+
 	// Steam authentication
 	new CTimer(1.0f, true, true, []()
 	{
@@ -241,6 +245,10 @@ bool CS2Scrim::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 bool CS2Scrim::Unload(char *error, size_t maxlen)
 {
+	FOR_EACH_VEC(coaches,i){
+		coaches.Remove(i);
+	}
+
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameDLL, GameFrame, g_pSource2Server, this, &CS2Scrim::Hook_GameFrame, true);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientActive, g_pSource2GameClients, this, &CS2Scrim::Hook_ClientActive, true);
 	SH_REMOVE_HOOK_MEMFUNC(IServerGameClients, ClientDisconnect, g_pSource2GameClients, this, &CS2Scrim::Hook_ClientDisconnect, true);
@@ -256,6 +264,8 @@ bool CS2Scrim::Unload(char *error, size_t maxlen)
 	ConVar_Unregister();
 
 	g_CommandList.Purge();
+
+    g_timers.RemoveAll();
 
 	FlushAllDetours();
 	//UndoPatches();
@@ -278,6 +288,10 @@ void CS2Scrim::Hook_StartupServer(const GameSessionConfiguration_t& config, ISou
 	if(g_bHasTicked)
 		RemoveMapTimers();
 
+	FOR_EACH_VEC(coaches,i){
+		coaches.Remove(i);
+	}
+	
 	g_bHasTicked = false;
 	gpGlobals = GetGameGlobals();
 
