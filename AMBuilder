@@ -50,7 +50,6 @@ for sdk_name in MMSPlugin.sdks:
       'src/mempatch.cpp',
       'src/patches.cpp',
       'src/cvars.cpp',
-	  'src/adminsystem.cpp',
       'src/commands.cpp',
       'src/addresses.cpp',
       'src/detours.cpp',
@@ -60,7 +59,6 @@ for sdk_name in MMSPlugin.sdks:
       'src/cs2_sdk/interfaces/cs2_interfaces.cpp',
       'src/cs2_sdk/interfaces/centitysystem.cpp',
       'src/ctimer.cpp',
-      'src/playermanager.cpp',
       'src/gameconfig.cpp',
     ]
 
