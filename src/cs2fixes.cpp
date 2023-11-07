@@ -175,7 +175,7 @@ bool CS2Scrim::Load(PluginId id, ISmmAPI *ismm, char *error, size_t maxlen, bool
 
 	std::string gamedirname = CGameConfig::GetDirectoryName(gamedirpath.Get());
 
-	const char *gamedataPath = "addons/cs2scrim/gamedata/cs2fixes.games.txt";
+	const char *gamedataPath = "addons/cs2coach/gamedata/cs2fixes.games.txt";
 	Message("Loading %s for game: %s\n", gamedataPath, gamedirname.c_str());
 
 	g_GameConfig = new CGameConfig(gamedirname, gamedataPath);
