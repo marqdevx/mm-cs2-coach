@@ -520,7 +520,7 @@ const char *CS2Scrim::GetLicense()
 
 const char *CS2Scrim::GetVersion()
 {
-	return "1.0.0.4-b";
+	return "1.0.0.0";
 }
 
 const char *CS2Scrim::GetDate()
