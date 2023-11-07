@@ -3,7 +3,7 @@
 # docker pull registry.gitlab.steamos.cloud/steamrt/scout/sdk
 # docker run -v D:\repos:/dockerVolume -it <imageID>
 
-export HL2SDKCS2='/dockerVolume/mm-cs2-scrim/sdk'
+export HL2SDKCS2='/dockerVolume/mm-cs2-coach/sdk'
 export MMSOURCE_DEV='/dockerVolume/metamod-source'
 export CC=clang
 export CXX=clang++
