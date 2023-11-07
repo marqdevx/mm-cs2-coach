@@ -14,8 +14,9 @@ This metamod addon ONLY adds the workaround to set a player as a coach on compet
 
 ## Available Commands
 
-  `.coach`: launch the practice config  
-  `.uncoach`: start the competitive match  
+  `.coach`: set to coach  
+  `.uncoach`: stop coaching, back as a player  
+      aliases: `.nocoach`, `.coachstop`, `.coachend`
 
 ## Compilation
 
