@@ -52,7 +52,6 @@ void ParseChatCommand(const char *pMessage, CCSPlayerController *pController)
 	{
 		g_CommandList[index](args, pController);
 	}
-
 }
 
 void ClientPrintAll(int hud_dest, const char *msg, ...)
@@ -82,14 +81,14 @@ void ClientPrint(CBasePlayerController *player, int hud_dest, const char *msg, .
 }
 
 CUtlVector <CCSPlayerController*> coaches;
-
+extern bool coach_verbose;
 void print_coaches(){
-	if (coaches.Count() < 1) return;
+	if (coaches.Count() < 1 || !coach_verbose) return;
 	
-	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"Coaches list: %i", coaches.Count());
-	/*FOR_EACH_VEC(coaches,i){
-		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"Coach %i:%s", i+1, coaches[i]->GetPlayerName());
-	}*/
+	ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"\5%i \1active \5coaches", coaches.Count());
+	FOR_EACH_VEC(coaches,i){
+		ClientPrintAll(HUD_PRINTTALK, CHAT_PREFIX"Coach %i:\5%s", i+1, coaches[i]->GetPlayerName());
+	}
 }
 
 CON_COMMAND_CHAT(coach, "Request slot coach")
@@ -156,6 +155,16 @@ CON_COMMAND_CHAT(uncoach, "Undo slot coach")
 	print_coaches();
 }
 
+bool coach_verbose = true;
+CON_COMMAND_F(c_coach_verbose, "set chat verbose",FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND){
+	if (args.ArgC() > 1)
+			coach_verbose = atoi(args[1]);
+
+	Message("Chat verbose is: %i \n", coach_verbose);
+}
+
+
+/* //tests
 CON_COMMAND_CHAT(coach_ct, "Switch team test"){
 	ClientPrint(player, HUD_PRINTTALK, "Test");
 	player->ChangeTeam(CS_TEAM_CT);
@@ -173,11 +182,4 @@ CON_COMMAND_CHAT(coach_test, "Switch team test"){
 	player->ChangeTeam(CS_TEAM_SPECTATOR);
 	player->ChangeTeam(CS_TEAM_CT);
 }
-
-extern float coach_timer;
-CON_COMMAND_F(c_coach_timer, "change coach killing timer",FCVAR_SPONLY | FCVAR_LINKED_CONCOMMAND){
-	if (args.ArgC() > 1)
-			coach_timer = atoi(args[1]);
-
-	Message("Coach killing timer is: %f \n", coach_timer);
-}
+*/
