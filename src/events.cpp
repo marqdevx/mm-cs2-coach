@@ -85,8 +85,7 @@ GAME_EVENT_F(round_freeze_end)
 	
 	FOR_EACH_VEC(coaches,i){
 		CCSPlayerController *pTarget = (CCSPlayerController *)g_pEntitySystem->GetBaseEntity((CEntityIndex)(coaches[i]->GetPlayerSlot() + 1));
-		pTarget->m_pInGameMoneyServices->m_iAccount = 0;
-
+		
 		CHandle<CCSPlayerController> hController = pTarget->GetHandle();
 		
 		new CTimer(2.0f, false, false, [hController]()
@@ -94,6 +93,7 @@ GAME_EVENT_F(round_freeze_end)
 			int currentTeam = hController->m_iTeamNum;
 			hController->ChangeTeam(CS_TEAM_SPECTATOR);
 			hController->ChangeTeam(currentTeam);
+		
 			return;
 		});
 	}
