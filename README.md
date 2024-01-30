@@ -1,5 +1,11 @@
 ![Build pass](https://github.com/marqdevx/mm-cs2-coach/actions/workflows/compile-metamod-addon.yaml/badge.svg)
 
+## Archive repository
+This plugin was already inside cs2scrim, but now it can be isolated inside the cs2scrim plugin by turning off the features you dont need  
+For more info please visit the original plugin https://github.com/marqdevx/mm-cs2-scrim
+
+Set as public archive from February 2024.
+
 ## IMPORTANT
 This repository is based on https://github.com/Source2ZE/CS2Fixes/
 Removing "unnecessary" features from the original addon.
